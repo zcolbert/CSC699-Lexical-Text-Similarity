@@ -31,14 +31,8 @@ std::unordered_map<std::string, unsigned int> tokenize(std::ifstream& fs)
     if (fs.is_open()) {
         while (fs) {
             fs >> token;
-            // If the token exists, increment its count
-            if (token_counts.contains(token)) {
-                token_counts[token] += 1;
-            }
-            // otherwise this is the first occurrence, so set the count to 1
-            else {
-                token_counts[token] = 1;
-            }
+            // If the token exists, increment its count. Otherwise, set initial count to 1.
+            token_counts.contains(token) ? token_counts[token] += 1 : token_counts[token] = 1;
         }
     }
     else {
@@ -48,9 +42,20 @@ std::unordered_map<std::string, unsigned int> tokenize(std::ifstream& fs)
 }
 
 
+void print_vector(const std::vector<unsigned int>& vec)
+{
+   std::cout << "<";
+   for (int i = 0; i < vec.size(); ++i) {
+       std::cout << vec[i] << ", ";
+   }
+   std::cout << ">" << std::endl;
+}
+
+
 int main()
 {
     using FrequencyMap = std::unordered_map<std::string, unsigned int>;
+    using UIntMatrix = std::vector<std::vector<unsigned int>>;
 
     std::set<std::string> unique_tokens;
     std::vector<FrequencyMap> doc_freq_maps;
@@ -78,6 +83,27 @@ int main()
     // Print out the set of unique tokens
     for (const auto& tkn: unique_tokens) {
         std::cout << tkn << std::endl;
+    }
+
+    // Project the document frequencies onto the term vector space
+    UIntMatrix projected_frequencies;
+    projected_frequencies.reserve(document_paths.size());
+
+    for (const auto& doc_token_map: doc_freq_maps) {
+        std::vector<unsigned int> projected_term_freq;
+        for (const auto token: unique_tokens) {
+            unsigned int count = 0;
+            if (doc_token_map.contains(token)) {
+                count = doc_token_map.at(token);
+            }
+            projected_term_freq.push_back(count);
+        }
+        projected_frequencies.push_back(projected_term_freq);
+    }
+
+    for (const auto& f: projected_frequencies) {
+        print_vector(f);
+        std::cout << f.size() << std::endl;
     }
 
     return 0;
