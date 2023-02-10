@@ -13,6 +13,7 @@
 #include <string>
 #include <set>
 #include <unordered_map>
+#include <vector>
 
 
 /**
@@ -30,9 +31,11 @@ std::unordered_map<std::string, unsigned int> tokenize(std::ifstream& fs)
     if (fs.is_open()) {
         while (fs) {
             fs >> token;
+            // If the token exists, increment its count
             if (token_counts.contains(token)) {
                 token_counts[token] += 1;
             }
+            // otherwise this is the first occurrence, so set the count to 1
             else {
                 token_counts[token] = 1;
             }
@@ -47,10 +50,35 @@ std::unordered_map<std::string, unsigned int> tokenize(std::ifstream& fs)
 
 int main()
 {
-    std::ifstream fs("data/JekyllAndHide.txt");
-    auto tokens = tokenize(fs);
-    for (auto tkn: tokens) {
-        std::cout << tkn.first << ": " << tkn.second << std::endl;
+    using FrequencyMap = std::unordered_map<std::string, unsigned int>;
+
+    std::set<std::string> unique_tokens;
+    std::vector<FrequencyMap> doc_freq_maps;
+
+    std::vector<std::string> document_paths = {
+            "data/JekyllAndHide.txt",
+            "data/GrimmsFairyTales.txt"
+    };
+
+    // Get the token counts for each document
+    for (const auto& path: document_paths) {
+        std::ifstream fs(path);
+        doc_freq_maps.push_back(tokenize(fs));
     }
+
+    // Construct the set of unique tokens across all documents
+    // This set will define the vector space used for constructing
+    // the term frequency matrix.
+    for (const auto& doc_token_map: doc_freq_maps) {
+        for (const auto& token_count: doc_token_map) {
+            unique_tokens.insert(token_count.first);
+        }
+    }
+
+    // Print out the set of unique tokens
+    for (const auto& tkn: unique_tokens) {
+        std::cout << tkn << std::endl;
+    }
+
     return 0;
 }
