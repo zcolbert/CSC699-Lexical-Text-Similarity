@@ -32,6 +32,7 @@ def main():
         writer = csv.writer(outfile)
         writer.writerow(headers)
 
+        # Open each of the text files and write them into the CSV
         for path in text_file_paths:
             with open(path, 'r') as infile:
                 row = [
