@@ -26,16 +26,17 @@ def main():
     # The desired files have a name format like: 123_1.txt
     text_file_paths = data_root_path.glob('**/[0-9]*_[0-9].txt')
 
-    headers = ['Source Document', 'Text']
+    headers = ['Document ID', 'Source Document', 'Text']
 
     with open(OUTFILE_PATH, 'w') as outfile:
         writer = csv.writer(outfile)
         writer.writerow(headers)
 
         # Open each of the text files and write them into the CSV
-        for path in text_file_paths:
+        for i, path in enumerate(text_file_paths):
             with open(path, 'r') as infile:
                 row = [
+                    i + 1,                                    # assign a document ID
                     path.relative_to(data_root_path.parent),  # relative path of source file
                     infile.read()                             # text contents of file
                 ]
