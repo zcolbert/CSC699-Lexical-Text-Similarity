@@ -13,6 +13,7 @@
 # ==============================================================================
 
 import csv
+import os
 from typing import List
 
 import pandas as pd
@@ -20,7 +21,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-DATAPATH = '../movie_reviews_combined.csv'
+DATA_DIR = '../data'
+FILENAME = 'movie_reviews_combined.csv'
 
 
 def load_documents(path: str, column_idx: int, row_count: int = None, skip_headers: bool = False) -> List[str]:
@@ -55,10 +57,10 @@ def load_documents(path: str, column_idx: int, row_count: int = None, skip_heade
 def main():
 
     text_col_idx = 2
-    row_count = 10000
-    output_path = '../benchmark_' + str(row_count) + '.csv'
+    row_count = 1000
 
-    documents = load_documents(DATAPATH,
+    data_path = os.path.join(DATA_DIR, FILENAME)
+    documents = load_documents(data_path,
                                column_idx=text_col_idx,
                                row_count=row_count,
                                skip_headers=True)
@@ -73,6 +75,9 @@ def main():
                          index=documents)
 
     scores = pd.DataFrame(cosine_similarity(frame, frame))
+
+    out_filename = f'benchmark_{row_count}.csv'
+    output_path = os.path.join(DATA_DIR, out_filename)
     scores.to_csv(output_path)
 
 
