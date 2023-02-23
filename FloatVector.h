@@ -1,3 +1,13 @@
+/******************************************************************************
+ * Filename: FloatVector.cpp
+ * Author: Zachary Colbert
+ * Contact: zcolbert@sfsu.edu
+ *
+ * Description: Interface of the FloatVector class which represents
+ *              an N-dimensional vector of floating point values, and provides
+ *              the operations needed to inspect and manipulate such a vector.
+ *****************************************************************************/
+
 #pragma once
 
 #include <vector>
