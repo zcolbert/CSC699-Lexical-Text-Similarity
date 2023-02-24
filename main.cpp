@@ -15,6 +15,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "linear.h"
+
 
 /**
  * Parse the stream into individual tokens and keep count of the number
@@ -42,27 +44,18 @@ std::unordered_map<std::string, unsigned int> tokenize(std::ifstream& fs)
 }
 
 
-void print_vector(const std::vector<unsigned int>& vec)
-{
-   std::cout << "<";
-   for (int i = 0; i < vec.size(); ++i) {
-       std::cout << vec[i] << ", ";
-   }
-   std::cout << ">" << std::endl;
-}
-
-
 int main()
 {
     using FrequencyMap = std::unordered_map<std::string, unsigned int>;
-    using UIntMatrix = std::vector<std::vector<unsigned int>>;
 
     std::set<std::string> unique_tokens;
     std::vector<FrequencyMap> doc_freq_maps;
 
     std::vector<std::string> document_paths = {
-            "data/JekyllAndHide.txt",
-            "data/GrimmsFairyTales.txt"
+            //"data/MobyDick.txt",
+            //"data/Frankenstein.txt"
+            "data/loremipsum_5p.txt",
+            "data/loremipsum_10p.txt"
     };
 
     // Get the token counts for each document
@@ -80,31 +73,29 @@ int main()
         }
     }
 
-    // Print out the set of unique tokens
-    for (const auto& tkn: unique_tokens) {
-        std::cout << tkn << std::endl;
-    }
-
     // Project the document frequencies onto the term vector space
-    UIntMatrix projected_frequencies;
+    std::vector<std::vector<float>> projected_frequencies;
     projected_frequencies.reserve(document_paths.size());
 
-    for (const auto& doc_token_map: doc_freq_maps) {
-        std::vector<unsigned int> projected_term_freq;
-        for (const auto token: unique_tokens) {
+    for (const auto& doc_token_map: doc_freq_maps)
+    {
+        std::vector<float> projected_term_freq;
+
+        for (const auto& token: unique_tokens)
+        {
             unsigned int count = 0;
             if (doc_token_map.contains(token)) {
                 count = doc_token_map.at(token);
             }
-            projected_term_freq.push_back(count);
+            projected_term_freq.push_back(static_cast<float>(count));
         }
-        projected_frequencies.push_back(projected_term_freq);
+        normalize(projected_term_freq);
+        projected_frequencies.emplace_back(projected_term_freq);
     }
 
-    for (const auto& f: projected_frequencies) {
-        print_vector(f);
-        std::cout << f.size() << std::endl;
-    }
+    auto mt = getTranspose(projected_frequencies);
+    auto result = matrixMultiply(projected_frequencies, mt);
+    printMatrix(result);
 
     return 0;
 }

@@ -3,4 +3,5 @@ project(LexicalTextSimilarity)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(LexicalTextSimilarity main.cpp linear.cpp FloatVector.cpp FloatVector.h)
+add_executable(LexicalTextSimilarity main.cpp  linear.h linear.cpp)
+add_executable(LinearTest linear.cpp)
