@@ -4,6 +4,14 @@
 #include <iomanip>
 
 
+
+/**
+ * Perform matrix multiplication and return a result matrix.
+ *
+ * @param lhs The left-side operand matrix (N x M)
+ * @param rhs The right-side operand matrix (M x N)
+ * @return An N x N matrix containing the multiplication result.
+ */
 std::vector<std::vector<float>> matrixMultiply(const std::vector<std::vector<float>>& lhs,
                                                const std::vector<std::vector<float>>& rhs)
 {
@@ -20,11 +28,16 @@ std::vector<std::vector<float>> matrixMultiply(const std::vector<std::vector<flo
             }
         }
     }
-
     return result;
 }
 
 
+/**
+ * Compute the magnitude of a vector.
+ *
+ * @param elements A vector of floating point values.
+ * @return The magnitude of the given vector.
+ */
 float magnitude(const std::vector<float>& elements)
 {
     float sum = 0.0f;
@@ -34,6 +47,12 @@ float magnitude(const std::vector<float>& elements)
     return std::sqrt(sum);
 }
 
+
+/**
+ * Normalize a vector in place.
+ *
+ * @param elements The vector to normalize.
+ */
 void normalize(std::vector<float>& elements)
 {
     float denom = magnitude(elements);
@@ -47,7 +66,12 @@ void normalize(std::vector<float>& elements)
     }
 }
 
-
+/**
+ * Compute the transpose of the given matrix.
+ *
+ * @param matrix A matrix of floating point values.
+ * @return The transpose of the input matrix.
+ */
 std::vector<std::vector<float>> getTranspose(const std::vector<std::vector<float>>& matrix)
 {
     size_t rows = matrix.size();
@@ -62,10 +86,32 @@ std::vector<std::vector<float>> getTranspose(const std::vector<std::vector<float
             matrix_transpose[col][row] = matrix[row][col];
         }
     }
-
     return matrix_transpose;
 }
 
+
+/**
+ * Compute the dot (scalar) product of the given vectors.
+ *
+ * @param lhs The left-hand operand vector.
+ * @param rhs The right-hand operand vector.
+ * @return The scalar product of the two given vectors.
+ */
+float dot(const std::vector<float>& lhs, const std::vector<float>& rhs)
+{
+    float result = 0;
+    for (int i = 0; i < lhs.size(); i++) {
+        result += lhs[i] * rhs[i];
+    }
+    return result;
+}
+
+
+/**
+ * Display a formatted output of the given vector.
+ *
+ * @param vec The vector to print.
+ */
 void printVector(const std::vector<float>& vec)
 {
     std::cout << "<";
@@ -75,7 +121,13 @@ void printVector(const std::vector<float>& vec)
     std::cout << vec[vec.size()-1] << ">" << std::endl;
 }
 
-void printMatrix(const std::vector<std::vector<float>> matrix)
+
+/**
+ * Display a formatted output of the given matrix.
+ *
+ * @param matrix The matrix to print.
+ */
+void printMatrix(const std::vector<std::vector<float>>& matrix)
 {
     std::cout << std::fixed;
     std::cout << std::setprecision(5);
@@ -84,11 +136,3 @@ void printMatrix(const std::vector<std::vector<float>> matrix)
     }
 }
 
-float dot(const std::vector<float>& lhs, const std::vector<float>& rhs)
-{
-    float result = 0;
-    for (int i = 0; i < lhs.size(); i++) {
-        result += lhs[i] * rhs[i];
-    }
-    return result;
-}
