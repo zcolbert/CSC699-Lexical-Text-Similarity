@@ -1,4 +1,14 @@
+/******************************************************************************
+ * Filename: linear.h
+ * Author: Zachary Colbert
+ * Contact: zcolbert@sfsu.edu
+ *
+ * Description: Interface of linear algebra operations on vectors and
+ *              matrices.
+ *****************************************************************************/
+
 #pragma once
+
 
 #include <cmath>
 #include <iostream>

@@ -1,8 +1,16 @@
-#include <cmath>
+/******************************************************************************
+ * Filename: linear.cpp
+ * Author: Zachary Colbert
+ * Contact: zcolbert@sfsu.edu
+ *
+ * Description: Implementation of linear algebra operations on vectors and
+ *              matrices.
+ *****************************************************************************/
+
+#include <cmath>    // sqrt
 #include <iostream>
 #include <vector>
 #include <iomanip>
-
 
 
 /**
