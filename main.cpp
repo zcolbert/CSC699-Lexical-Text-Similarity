@@ -19,38 +19,58 @@
 
 
 /**
+ * Convert a string to lowercase in place.
+ *
+ * @param orig The string to modify.
+ */
+void lowercase(std::string& orig)
+{
+    for (size_t i = 0; i < orig.length(); ++i) {
+        orig[i] = std::tolower(orig[i]);
+    }
+}
+
+
+/**
  * Parse the stream into individual tokens and keep count of the number
  * of times each token occurs in the document.
  *
  * @param fs The text stream to be parsed.
  * @return A map of tokens and their associated counts for this document.
  */
-std::unordered_map<std::string, unsigned int> tokenize(const std::string& line, size_t ngram_size, bool lowercase)
+std::unordered_map<std::string, unsigned int> tokenize(const std::string& line, size_t ngram_size, bool casefold)
 {
     std::unordered_map<std::string, unsigned int> token_counts;
     std::string token;
 
+    // Walk through the string and extract fixed length tokens
+    // consisting of adjacent characters, until the end of the string is reached.
+    // For the string "hello world" and ngram_size=2, the tokens would be:
+    //  "he", "el", "ll", "lo", "o ", " w", "wo", "or", "rl", "ld"
     size_t pos = 0;
-    while (pos < line.length()) {
+    while (pos < line.length())
+    {
+        // Grab a token consisting of `ngram_size` adjacent characters,
         token = line.substr(pos++, ngram_size);
-        if (lowercase) {
-            for (int i = 0; i < token.length(); ++i) {
-               token[i] = std::tolower(token[i]);
-            }
+
+        // Case-insensitive tokenization: convert to lowercase
+        if (casefold) {
+            lowercase(token);
         }
-
-        std::cout << "'" << token << "'" << std::endl;
-        // If the token exists, increment its count. Otherwise, set initial count to 1.
-        token_counts.contains(token) ? token_counts[token] += 1 : token_counts[token] = 1;
+        // If the token exists, increment its count.
+        // Otherwise, set initial count to 1.
+        if (token_counts.contains(token)) {
+            token_counts[token] += 1;
+        } else {
+            token_counts[token] = 1;
+        }
     }
-
     return token_counts;
 }
 
 
 int main(int argc, char* argv[])
 {
-
     if (argc < 3) {
         std::cout << "Usage: LexicalTextSimilarity datafile count" << std::endl;
         return 1;
@@ -83,7 +103,6 @@ int main(int argc, char* argv[])
         }
     }
 
-    std::cout << "Number of unique tokens: " << unique_tokens.size() << std::endl;
     // Project the document frequencies onto the term vector space
     std::vector<std::vector<float>> projected_frequencies;
 
