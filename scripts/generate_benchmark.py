@@ -12,6 +12,7 @@
 #   This script uses the scikit-learn implementation of cosine similarity.
 # ==============================================================================
 
+import argparse
 import csv
 import os
 from typing import List
@@ -22,7 +23,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 DATA_DIR = '../data'
-FILENAME = 'movie_reviews_combined.csv'
 
 
 def load_documents(path: str, column_idx: int, row_count: int = None, skip_headers: bool = False) -> List[str]:
@@ -56,13 +56,26 @@ def load_documents(path: str, column_idx: int, row_count: int = None, skip_heade
 
 def main():
 
-    text_col_idx = 2
-    row_count = 10
+    # Initialize argument parser
+    parser = argparse.ArgumentParser()
 
-    data_path = os.path.join(DATA_DIR, FILENAME)
+    parser.add_argument('filename', default=0, action='store', type=str,
+                        help='Path of the input file')
+
+    parser.add_argument('-i', '--index', default=0, action='store', type=int,
+                        help='Zero-based positional index of the text column.')
+
+    parser.add_argument('-c', '--count', default=None, action='store', type=int,
+                        help='Limit the number of rows to this count.')
+
+    # Parse command line args
+    args = parser.parse_args()
+
+    # Load documents from the input file
+    data_path = os.path.join(args.filename)
     documents = load_documents(data_path,
-                               column_idx=text_col_idx,
-                               row_count=row_count,
+                               column_idx=args.index,
+                               row_count=args.count,
                                skip_headers=True)
 
     count_vectorizer = CountVectorizer(analyzer='char', ngram_range=(2, 2))
@@ -77,7 +90,7 @@ def main():
 
     scores = pd.DataFrame(cosine_similarity(frame, frame))
 
-    out_filename = f'benchmark_{row_count}.csv'
+    out_filename = f'benchmark_{args.count}.csv'
     output_path = os.path.join(DATA_DIR, out_filename)
     scores.to_csv(output_path)
 
