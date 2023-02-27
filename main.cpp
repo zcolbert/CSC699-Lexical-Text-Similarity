@@ -59,7 +59,7 @@ std::unordered_map<std::string, unsigned int> tokenize(const std::string& line, 
         }
         // If the token exists, increment its count.
         // Otherwise, set initial count to 1.
-        if (token_counts.contains(token)) {
+        if (token_counts.find(token) != token_counts.end()) {
             token_counts[token] += 1;
         } else {
             token_counts[token] = 1;
@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
         for (const auto& token: unique_tokens)
         {
             unsigned int freq = 0;
-            if (doc_token_map.contains(token)) {
+            if (doc_token_map.find(token) != doc_token_map.end()) {
                 freq = doc_token_map.at(token);
             }
             projected_term_freq.push_back(static_cast<float>(freq));
