@@ -14,6 +14,7 @@
 #include <set>
 #include <unordered_map>
 #include <vector>
+#include <sstream>
 
 #include "linear.h"
 
@@ -25,45 +26,46 @@
  * @param fs The text stream to be parsed.
  * @return A map of tokens and their associated counts for this document.
  */
-std::unordered_map<std::string, unsigned int> tokenize(std::ifstream& fs)
+std::unordered_map<std::string, unsigned int> tokenize(const std::string& line)
 {
     std::unordered_map<std::string, unsigned int> token_counts;
     std::string token;
+    std::istringstream iss(line);
 
-    if (fs.is_open()) {
-        while (fs) {
-            fs >> token;
-            // If the token exists, increment its count. Otherwise, set initial count to 1.
-            token_counts.contains(token) ? token_counts[token] += 1 : token_counts[token] = 1;
-        }
+    while (iss) {
+        iss >> token;
+        // If the token exists, increment its count. Otherwise, set initial count to 1.
+        token_counts.contains(token) ? token_counts[token] += 1 : token_counts[token] = 1;
     }
-    else {
-        throw std::runtime_error("Parse error: file stream is invalid");
-    }
+
     return token_counts;
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
-    using FrequencyMap = std::unordered_map<std::string, unsigned int>;
 
-    std::set<std::string> unique_tokens;
-    std::vector<FrequencyMap> doc_freq_maps;
-
-    std::vector<std::string> document_paths = {
-            //"data/MobyDick.txt",
-            //"data/Frankenstein.txt"
-            "data/loremipsum_5p.txt",
-            "data/loremipsum_10p.txt"
-    };
-
-    // Get the token counts for each document
-    for (const auto& path: document_paths) {
-        std::ifstream fs(path);
-        doc_freq_maps.push_back(tokenize(fs));
+    if (argc < 3) {
+        std::cout << "Usage: LexicalTextSimilarity datafile count" << std::endl;
+        return 1;
     }
 
+    std::string data_file_path = argv[1];
+    char *p_end{};
+    unsigned int count = std::strtoul(argv[2], &p_end, 10);
+
+    using FrequencyMap = std::unordered_map<std::string, unsigned int>;
+
+    // Get the token counts for each document
+    std::vector<FrequencyMap> doc_freq_maps;
+    std::ifstream fs(data_file_path);
+    std::string line;
+    int i = 0;
+    while (std::getline(fs, line) && i++ <= count) {
+        doc_freq_maps.push_back(tokenize(line));
+    }
+
+    std::set<std::string> unique_tokens;
     // Construct the set of unique tokens across all documents
     // This set will define the vector space used for constructing
     // the term frequency matrix.
@@ -75,7 +77,6 @@ int main()
 
     // Project the document frequencies onto the term vector space
     std::vector<std::vector<float>> projected_frequencies;
-    projected_frequencies.reserve(document_paths.size());
 
     for (const auto& doc_token_map: doc_freq_maps)
     {
@@ -83,11 +84,11 @@ int main()
 
         for (const auto& token: unique_tokens)
         {
-            unsigned int count = 0;
+            unsigned int freq = 0;
             if (doc_token_map.contains(token)) {
-                count = doc_token_map.at(token);
+                freq = doc_token_map.at(token);
             }
-            projected_term_freq.push_back(static_cast<float>(count));
+            projected_term_freq.push_back(static_cast<float>(freq));
         }
         normalize(projected_term_freq);
         projected_frequencies.emplace_back(projected_term_freq);
