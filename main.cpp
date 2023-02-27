@@ -14,7 +14,6 @@
 #include <set>
 #include <unordered_map>
 #include <vector>
-#include <sstream>
 
 #include "linear.h"
 
@@ -26,14 +25,21 @@
  * @param fs The text stream to be parsed.
  * @return A map of tokens and their associated counts for this document.
  */
-std::unordered_map<std::string, unsigned int> tokenize(const std::string& line)
+std::unordered_map<std::string, unsigned int> tokenize(const std::string& line, size_t ngram_size, bool lowercase)
 {
     std::unordered_map<std::string, unsigned int> token_counts;
     std::string token;
-    std::istringstream iss(line);
 
-    while (iss) {
-        iss >> token;
+    size_t pos = 0;
+    while (pos < line.length()) {
+        token = line.substr(pos++, ngram_size);
+        if (lowercase) {
+            for (int i = 0; i < token.length(); ++i) {
+               token[i] = std::tolower(token[i]);
+            }
+        }
+
+        std::cout << "'" << token << "'" << std::endl;
         // If the token exists, increment its count. Otherwise, set initial count to 1.
         token_counts.contains(token) ? token_counts[token] += 1 : token_counts[token] = 1;
     }
@@ -56,13 +62,15 @@ int main(int argc, char* argv[])
 
     using FrequencyMap = std::unordered_map<std::string, unsigned int>;
 
+    const int ngram_size = 2;
+
     // Get the token counts for each document
     std::vector<FrequencyMap> doc_freq_maps;
     std::ifstream fs(data_file_path);
     std::string line;
     int i = 0;
     while (std::getline(fs, line) && i++ <= count) {
-        doc_freq_maps.push_back(tokenize(line));
+        doc_freq_maps.push_back(tokenize(line, ngram_size, true));
     }
 
     std::set<std::string> unique_tokens;
@@ -75,6 +83,7 @@ int main(int argc, char* argv[])
         }
     }
 
+    std::cout << "Number of unique tokens: " << unique_tokens.size() << std::endl;
     // Project the document frequencies onto the term vector space
     std::vector<std::vector<float>> projected_frequencies;
 

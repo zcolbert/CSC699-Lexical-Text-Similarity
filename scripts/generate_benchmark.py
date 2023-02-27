@@ -57,7 +57,7 @@ def load_documents(path: str, column_idx: int, row_count: int = None, skip_heade
 def main():
 
     text_col_idx = 2
-    row_count = 1000
+    row_count = 10
 
     data_path = os.path.join(DATA_DIR, FILENAME)
     documents = load_documents(data_path,
@@ -65,9 +65,10 @@ def main():
                                row_count=row_count,
                                skip_headers=True)
 
-    count_vectorizer = CountVectorizer()
-    sparse_matrix = count_vectorizer.fit_transform(documents)
+    count_vectorizer = CountVectorizer(analyzer='char', ngram_range=(2, 2))
 
+    # learn the vocabulary and produce a document term matrix
+    sparse_matrix = count_vectorizer.fit_transform(documents)
     doc_term_matrix = sparse_matrix.todense()
 
     frame = pd.DataFrame(doc_term_matrix,
