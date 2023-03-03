@@ -69,6 +69,40 @@ std::unordered_map<std::string, unsigned int> tokenize(const std::string& line, 
 }
 
 
+/**
+ * Get a set of unique keys from a vector of unordered_maps.
+ * @param maps A vector of unordered_maps.
+ * @return A set of all unique keys across the maps.
+ */
+std::set<std::string> uniqueKeys(const std::vector<std::unordered_map<std::string, unsigned int>>& maps)
+{
+    std::set<std::string> unique;
+    for (const auto& map: maps) {
+        for (const auto& kv: map) {
+            unique.insert(kv.first);
+        }
+    }
+    return unique;
+}
+
+
+std::vector<float> embed(const std::unordered_map<std::string, unsigned int>& freq_map,
+                         const std::set<std::string>& basis)
+{
+    std::vector<float> embedded(basis.size());
+
+    for (const auto& elem: basis)
+    {
+        unsigned int freq = 0;
+        if (freq_map.find(elem) != freq_map.end()) {
+            freq = freq_map.at(elem);
+        }
+        embedded.push_back(static_cast<float>(freq));
+    }
+    return embedded;
+}
+
+
 int main(int argc, char* argv[])
 {
     if (argc < 3) {
@@ -93,37 +127,22 @@ int main(int argc, char* argv[])
         doc_freq_maps.push_back(tokenize(line, ngram_size, true));
     }
 
-    std::set<std::string> unique_tokens;
     // Construct the set of unique tokens across all documents
     // This set will define the vector space used for constructing
     // the term frequency matrix.
-    for (const auto& doc_token_map: doc_freq_maps) {
-        for (const auto& token_count: doc_token_map) {
-            unique_tokens.insert(token_count.first);
-        }
-    }
+    std::set<std::string> unique_tokens = uniqueKeys(doc_freq_maps);
 
-    // Project the document frequencies onto the term vector space
-    std::vector<std::vector<float>> projected_frequencies;
-
+    // Embed the document frequencies into the term vector space
+    std::vector<std::vector<float>> embedded_frequencies;
     for (const auto& doc_token_map: doc_freq_maps)
     {
-        std::vector<float> projected_term_freq;
-
-        for (const auto& token: unique_tokens)
-        {
-            unsigned int freq = 0;
-            if (doc_token_map.find(token) != doc_token_map.end()) {
-                freq = doc_token_map.at(token);
-            }
-            projected_term_freq.push_back(static_cast<float>(freq));
-        }
-        normalize(projected_term_freq);
-        projected_frequencies.emplace_back(projected_term_freq);
+        std::vector<float> embedded = embed(doc_token_map, unique_tokens);
+        normalize(embedded);
+        embedded_frequencies.emplace_back(embedded);
     }
 
-    auto mt = getTranspose(projected_frequencies);
-    auto result = matrixMultiply(projected_frequencies, mt);
+    auto mt = getTranspose(embedded_frequencies);
+    auto result = matrixMultiply(embedded_frequencies, mt);
     printMatrix(result);
 
     return 0;
