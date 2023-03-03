@@ -86,6 +86,13 @@ std::set<std::string> uniqueKeys(const std::vector<std::unordered_map<std::strin
 }
 
 
+/**
+ * Embed the frequency map's values onto the vector space of the given basis.
+ *
+ * @param freq_map A map of terms and their frequencies.
+ * @param basis A unique set of all terms in the vocabulary.
+ * @return A vector of term frequencies embedded into the basis vector space.
+ */
 std::vector<float> embed(const std::unordered_map<std::string, unsigned int>& freq_map,
                          const std::set<std::string>& basis)
 {
@@ -133,6 +140,7 @@ int main(int argc, char* argv[])
     std::set<std::string> unique_tokens = uniqueKeys(doc_freq_maps);
 
     // Embed the document frequencies into the term vector space
+    // and produce a matrix from the normalized vectors
     std::vector<std::vector<float>> embedded_frequencies;
     for (const auto& doc_token_map: doc_freq_maps)
     {
