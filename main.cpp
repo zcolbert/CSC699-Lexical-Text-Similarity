@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
     std::ifstream fs(data_file_path);
     std::string line;
     int i = 0;
-    while (std::getline(fs, line) && i++ <= count) {
+    while (std::getline(fs, line) && i++ < count) {
         doc_freq_maps.push_back(tokenize(line, ngram_size, true));
     }
 
