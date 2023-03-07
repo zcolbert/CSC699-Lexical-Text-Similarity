@@ -1,3 +1,12 @@
+/******************************************************************************
+ * Filename: tokenize.h
+ * Author: Zachary Colbert
+ * Contact: zcolbert@sfsu.edu
+ *
+ * Description:
+ *      Interface for string tokenization functions.
+ *****************************************************************************/
+
 #pragma once
 
 #include <string>

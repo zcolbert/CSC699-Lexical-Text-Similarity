@@ -1,3 +1,12 @@
+/******************************************************************************
+ * Filename: tokenize.cpp
+ * Author: Zachary Colbert
+ * Contact: zcolbert@sfsu.edu
+ *
+ * Description:
+ *      Implementation of string tokenization functions.
+ *****************************************************************************/
+
 #include <fstream>
 
 #include "tokenize.h"
