@@ -7,7 +7,7 @@
  *              matrices.
  *****************************************************************************/
 
-#include "linearflat.h"
+#include "linear.h"
 
 #include <cmath>    // sqrt
 
