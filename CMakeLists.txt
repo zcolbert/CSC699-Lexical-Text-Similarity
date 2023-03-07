@@ -4,4 +4,3 @@ project(LexicalTextSimilarity)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(LexicalTextSimilarity main.cpp linear.h linear.cpp tokenize.h tokenize.cpp)
-add_executable(linear lineartest.cpp linearflat.h linearflat.cpp)
