@@ -9,6 +9,7 @@
 
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <string>
 #include <set>
@@ -16,57 +17,7 @@
 #include <vector>
 
 #include "linear.h"
-
-
-/**
- * Convert a string to lowercase in place.
- *
- * @param orig The string to modify.
- */
-void lowercase(std::string& orig)
-{
-    for (size_t i = 0; i < orig.length(); ++i) {
-        orig[i] = std::tolower(orig[i]);
-    }
-}
-
-
-/**
- * Parse the stream into individual tokens and keep count of the number
- * of times each token occurs in the document.
- *
- * @param fs The text stream to be parsed.
- * @return A map of tokens and their associated counts for this document.
- */
-std::unordered_map<std::string, unsigned int> tokenize(const std::string& line, size_t ngram_size, bool casefold)
-{
-    std::unordered_map<std::string, unsigned int> token_counts;
-    std::string token;
-
-    // Walk through the string and extract fixed length tokens
-    // consisting of adjacent characters, until the end of the string is reached.
-    // For the string "hello world" and ngram_size=2, the tokens would be:
-    //  "he", "el", "ll", "lo", "o ", " w", "wo", "or", "rl", "ld"
-    size_t pos = 0;
-    while (pos < line.length())
-    {
-        // Grab a token consisting of `ngram_size` adjacent characters,
-        token = line.substr(pos++, ngram_size);
-
-        // Case-insensitive tokenization: convert to lowercase
-        if (casefold) {
-            lowercase(token);
-        }
-        // If the token exists, increment its count.
-        // Otherwise, set initial count to 1.
-        if (token_counts.find(token) != token_counts.end()) {
-            token_counts[token] += 1;
-        } else {
-            token_counts[token] = 1;
-        }
-    }
-    return token_counts;
-}
+#include "tokenize.h"
 
 
 /**
@@ -74,7 +25,7 @@ std::unordered_map<std::string, unsigned int> tokenize(const std::string& line, 
  * @param maps A vector of unordered_maps.
  * @return A set of all unique keys across the maps.
  */
-std::set<std::string> uniqueKeys(const std::vector<std::unordered_map<std::string, unsigned int>>& maps)
+std::set<std::string> extractUniqueKeys(const std::vector<std::unordered_map<std::string, unsigned int>>& maps)
 {
     std::set<std::string> unique;
     for (const auto& map: maps) {
@@ -109,6 +60,25 @@ std::vector<float> embed(const std::unordered_map<std::string, unsigned int>& fr
     return embedded;
 }
 
+void printRow(const std::vector<float>& matrix, size_t start, size_t end)
+{
+    std::cout << std::setprecision(2) << std::fixed;
+    std::cout << '<';
+    for (size_t i = start; i < end - 1; ++i) {
+        std::cout << std::right << std::setw(6) << matrix[i] << ", ";
+    }
+    std::cout << matrix[end-1] << " >" << std::endl;
+}
+
+void printMatrix(const std::vector<float>& matrix, size_t rows, size_t cols)
+{
+    for (size_t i = 0; i < rows; ++i)
+    {
+        size_t start = i * cols;
+        size_t end = start + cols;
+        printRow(matrix, start, end);
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -119,39 +89,38 @@ int main(int argc, char* argv[])
 
     std::string data_file_path = argv[1];
     char *p_end{};
-    unsigned int count = std::strtoul(argv[2], &p_end, 10);
-
-    using FrequencyMap = std::unordered_map<std::string, unsigned int>;
-
-    const int ngram_size = 2;
+    unsigned int max_count = std::strtoul(argv[2], &p_end, 10);
+    const short ngram_len = 2;
 
     // Get the token counts for each document
-    std::vector<FrequencyMap> doc_freq_maps;
-    std::ifstream fs(data_file_path);
-    std::string line;
-    int i = 0;
-    while (std::getline(fs, line) && i++ < count) {
-        doc_freq_maps.push_back(tokenize(line, ngram_size, true));
-    }
+    auto doc_freq_maps = tokenizeFile(data_file_path, ngram_len, max_count, true);
 
     // Construct the set of unique tokens across all documents
-    // This set will define the vector space used for constructing
-    // the term frequency matrix.
-    std::set<std::string> unique_tokens = uniqueKeys(doc_freq_maps);
+    // This set will define the vector space used for constructing the term frequency matrix.
+    std::set<std::string> unique_tokens = extractUniqueKeys(doc_freq_maps);
 
     // Embed the document frequencies into the term vector space
     // and produce a matrix from the normalized vectors
-    std::vector<std::vector<float>> embedded_frequencies;
-    for (const auto& doc_token_map: doc_freq_maps)
-    {
-        std::vector<float> embedded = embed(doc_token_map, unique_tokens);
-        normalize(embedded);
-        embedded_frequencies.emplace_back(embedded);
-    }
+    size_t cols = unique_tokens.size();
+    size_t rows = doc_freq_maps.size();
 
-    auto mt = getTranspose(embedded_frequencies);
-    auto result = matrixMultiply(embedded_frequencies, mt);
-    printMatrix(result);
+    std::vector<float> matrix(rows * cols, 0);
+
+    int idx = 0;
+    for (const auto& freq_map: doc_freq_maps)
+    {
+        for (const auto& tkn: unique_tokens)
+        {
+            if (freq_map.find(tkn) != freq_map.end()) {
+                matrix[idx] = static_cast<float>(freq_map.at(tkn));
+            }
+            ++idx;
+        }
+    }
+    normalizeMatrix(matrix, rows, cols);
+
+    auto m_T = transpose(matrix, rows, cols);
+    auto result = matrixMultiply(matrix, m_T, rows, cols);
 
     return 0;
 }
