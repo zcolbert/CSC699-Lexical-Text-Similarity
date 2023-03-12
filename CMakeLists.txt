@@ -4,4 +4,5 @@ project(LexicalTextSimilarity)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Release)
 
-add_executable(LexicalTextSimilarity main.cpp linear.h linear.cpp tokenize.h tokenize.cpp)
+add_executable(LexicalTextSimilarity_2dvector main.cpp tokenize.h tokenize.cpp LTS.h LTS_2d.cpp)
+add_executable(LexicalTextSimilarity_flatvector main.cpp tokenize.h tokenize.cpp LTS.h LTS_flat.cpp)
