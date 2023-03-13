@@ -11,5 +11,5 @@ void execute(const std::vector<std::unordered_map<std::string, unsigned int>>& d
     auto matrix = getTermFrequencyMatrix(doc_freq_maps, vocabulary, rows, cols);
     normalizeMatrix(matrix, rows,cols);
     auto m_T = transpose(matrix, rows, cols);
-    auto result = matrixMultiply(matrix, m_T, rows, cols);
+    auto result = matrixMultiply_ijk(matrix, m_T, rows, cols);
 }

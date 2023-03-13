@@ -146,3 +146,82 @@ void printMatrix(const std::vector<float>& matrix, size_t rows, size_t cols)
         printRow(matrix, start, end);
     }
 }
+
+std::vector<float> matrixMultiply_ijk(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m)
+{
+    std::vector<float> result(n * n, 0);
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            for (int k = 0; k < m; ++k) {
+                result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
+            }
+        }
+    }
+    return result;
+}
+std::vector<float> matrixMultiply_ikj(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m)
+{
+    std::vector<float> result(n * n, 0);
+
+    for (int i = 0; i < n; ++i) {
+        for (int k = 0; k < m; ++k) {
+            for (int j = 0; j < n; ++j) {
+                result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
+            }
+        }
+    }
+    return result;
+}
+std::vector<float> matrixMultiply_jik(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m)
+{
+    std::vector<float> result(n * n, 0);
+
+    for (int j = 0; j < n; ++j) {
+        for (int i = 0; i < n; ++i) {
+            for (int k = 0; k < m; ++k) {
+                result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
+            }
+        }
+    }
+    return result;
+}
+std::vector<float> matrixMultiply_jki(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m)
+{
+    std::vector<float> result(n * n, 0);
+
+    for (int j = 0; j < n; ++j) {
+        for (int k = 0; k < m; ++k) {
+            for (int i = 0; i < n; ++i) {
+                result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
+            }
+        }
+    }
+    return result;
+}
+std::vector<float> matrixMultiply_kij(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m)
+{
+    std::vector<float> result(n * n, 0);
+
+    for (int k = 0; k < m; ++k) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
+            }
+        }
+    }
+    return result;
+}
+std::vector<float> matrixMultiply_kji(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m)
+{
+    std::vector<float> result(n * n, 0);
+
+    for (int k = 0; k < m; ++k) {
+        for (int j = 0; j < n; ++j) {
+            for (int i = 0; i < n; ++i) {
+                result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
+            }
+        }
+    }
+    return result;
+}
