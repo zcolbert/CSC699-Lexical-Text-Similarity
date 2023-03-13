@@ -13,4 +13,5 @@ void execute(const std::vector<std::unordered_map<std::string, unsigned int>>& d
     auto m_T = transpose(matrix, rows, cols);
 
     auto result = matrixMultiply_ikj(matrix, m_T, rows, cols);
+    printMatrix(result, rows, rows);
 }
