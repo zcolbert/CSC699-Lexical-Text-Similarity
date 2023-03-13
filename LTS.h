@@ -3,7 +3,8 @@
 #include <unordered_map>
 #include <vector>
 
+void setup();
+
 void execute(const std::vector<std::unordered_map<std::string, unsigned int>>& doc_freq_maps,
              const std::set<std::string>& unique_tokens);
-
 
