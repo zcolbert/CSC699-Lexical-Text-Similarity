@@ -9,6 +9,9 @@
 #pragma once
 
 #include <vector>
+#include <unordered_map>
+#include <set>
+#include <string>
 
 
 /**
@@ -59,3 +62,14 @@ std::vector<float> transpose(const std::vector<float>& matrix, size_t rows, size
  * @return An N x N matrix containing the multiplication results.
  */
 std::vector<float> matrixMultiply(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m);
+
+
+
+
+std::vector<float> getTermFrequencyMatrix(
+        const std::vector<std::unordered_map<std::string, unsigned int>>& doc_freq_maps,
+        const std::set<std::string>& vocabulary,
+        size_t rows, size_t cols);
+
+void printRow(const std::vector<float>& matrix, size_t start, size_t end);
+void printMatrix(const std::vector<float>& matrix, size_t rows, size_t cols);

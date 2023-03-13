@@ -8,6 +8,8 @@
  *****************************************************************************/
 
 #include "linear.h"
+#include <iostream>
+#include <iomanip>
 
 #include <cmath>    // sqrt
 
@@ -102,4 +104,45 @@ std::vector<float> matrixMultiply(const std::vector<float>& lhs, const std::vect
         }
     }
     return result;
+}
+
+std::vector<float> getTermFrequencyMatrix(
+        const std::vector<std::unordered_map<std::string, unsigned int>>& doc_freq_maps,
+        const std::set<std::string>& vocabulary,
+        size_t rows, size_t cols)
+{
+    std::vector<float> matrix(rows * cols, 0);
+
+    int idx = 0;
+    for (const auto& doc: doc_freq_maps)
+    {
+        for (const auto& tkn: vocabulary)
+        {
+            if (doc.find(tkn) != doc.end()) {
+                matrix[idx] = static_cast<float>(doc.at(tkn));
+            }
+            ++idx;
+        }
+    }
+    return matrix;
+}
+
+void printRow(const std::vector<float>& matrix, size_t start, size_t end)
+{
+    std::cout << std::setprecision(2) << std::fixed;
+    std::cout << '<';
+    for (size_t i = start; i < end - 1; ++i) {
+        std::cout << std::right << std::setw(6) << matrix[i] << ", ";
+    }
+    std::cout << matrix[end-1] << " >" << std::endl;
+}
+
+void printMatrix(const std::vector<float>& matrix, size_t rows, size_t cols)
+{
+    for (size_t i = 0; i < rows; ++i)
+    {
+        size_t start = i * cols;
+        size_t end = start + cols;
+        printRow(matrix, start, end);
+    }
 }
