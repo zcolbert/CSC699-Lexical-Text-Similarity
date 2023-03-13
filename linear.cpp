@@ -94,16 +94,8 @@ std::vector<float> transpose(const std::vector<float>& matrix, size_t rows, size
  */
 std::vector<float> matrixMultiply(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m)
 {
-    std::vector<float> result(n * n, 0);
-
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            for (int k = 0; k < m; ++k) {
-                result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
-            }
-        }
-    }
-    return result;
+    // Choose a specific loop ordering that performed best in benchmarks
+    return matrixMultiply_kij(lhs, rhs, n, m);
 }
 
 std::vector<float> getTermFrequencyMatrix(
