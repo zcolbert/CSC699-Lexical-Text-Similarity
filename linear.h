@@ -69,7 +69,15 @@ std::vector<float> matrixMultiply_jki(const std::vector<float>& lhs, const std::
 std::vector<float> matrixMultiply_kij(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m);
 std::vector<float> matrixMultiply_kji(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m);
 
+void matrixMultiply(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
+void matrixMultiply_ijk(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
+void matrixMultiply_ikj(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
+void matrixMultiply_jik(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
+void matrixMultiply_jki(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
+void matrixMultiply_kij(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
+void matrixMultiply_kji(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
 
+std::vector<float> matrixMultiply_ijk_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m);
 
 
 std::vector<float> getTermFrequencyMatrix(
