@@ -281,3 +281,48 @@ void matrixMultiply_kji(const std::vector<float>& lhs, const std::vector<float>&
         }
     }
 }
+
+/************************** Block/Copy optimization *******************************/
+
+void readBlock(std::vector<float>& dest, const std::vector<float>& src, size_t start_row, size_t start_col, size_t n, size_t blocksize)
+{
+    std::vector<float> block;
+    block.reserve(blocksize * blocksize);
+
+    for (size_t i = 0; i < blocksize; ++i) {
+        for (size_t j = 0; j < blocksize; ++j) {
+            dest[i * blocksize + j] = src[(i + start_row) * n + (j + start_col)];
+        }
+    }
+}
+
+void writeBlock(std::vector<float>& dest, const std::vector<float>& src, size_t start_row, size_t start_col, size_t n, size_t blocksize)
+{
+    for (size_t i = 0; i < blocksize; ++i) {
+        for (size_t j = 0; j < blocksize; ++j) {
+            dest[(i + start_row) * n + (j + start_col)] = src[i * blocksize + j];
+        }
+    }
+}
+
+void matrixMultiply_ijk_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize)
+{
+    std::vector<float> ablock(blocksize * blocksize);
+    std::vector<float> bblock(blocksize * blocksize);
+    std::vector<float> cblock(blocksize * blocksize);
+
+    for (size_t i = 0; i < n; i += blocksize)
+    {
+        for (size_t j = 0; j < n; j += blocksize)
+        {
+            readBlock(cblock, result, i, j, n, blocksize);
+            for (size_t k = 0; k < m; k += blocksize)
+            {
+                readBlock(ablock, lhs, i, k, m, blocksize);
+                readBlock(bblock, rhs, k, j, n, blocksize);
+                matrixMultiply_ijk(ablock, bblock, cblock, blocksize, blocksize);
+            }
+            writeBlock(result, cblock, i, j, n, blocksize);
+        }
+    }
+}

@@ -69,6 +69,10 @@ std::vector<float> matrixMultiply_jki(const std::vector<float>& lhs, const std::
 std::vector<float> matrixMultiply_kij(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m);
 std::vector<float> matrixMultiply_kji(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m);
 
+/* Matrix multiplication that populates the result matrix as an in/out parameter instead of a return value.
+ * This is necessary to support the block/copy optimization which writes partial sections of the result in
+ * separate steps.
+ */
 void matrixMultiply(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
 void matrixMultiply_ijk(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
 void matrixMultiply_ikj(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
@@ -76,6 +80,12 @@ void matrixMultiply_jik(const std::vector<float>& lhs, const std::vector<float>&
 void matrixMultiply_jki(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
 void matrixMultiply_kij(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
 void matrixMultiply_kji(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m);
+
+/* Matrix multiply with block-copy optimization */
+void readBlock(std::vector<float>& dest, const std::vector<float>& src, size_t start_row, size_t start_col, size_t n, size_t blocksize);
+void writeBlock(std::vector<float>& dest, const std::vector<float>& src, size_t start_row, size_t start_col, size_t n, size_t blocksize);
+
+void matrixMultiply_ijk_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
 
 std::vector<float> matrixMultiply_ijk_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, size_t n, size_t m);
 
