@@ -15,4 +15,7 @@ add_executable(LexicalTextSimilarity_flatvector_loop_jki main.cpp tokenize.h tok
 add_executable(LexicalTextSimilarity_flatvector_loop_kij main.cpp tokenize.h tokenize.cpp LTS.h LTS_flat_loop_kij.cpp linear.h linear.cpp)
 add_executable(LexicalTextSimilarity_flatvector_loop_kji main.cpp tokenize.h tokenize.cpp LTS.h LTS_flat_loop_kji.cpp linear.h linear.cpp)
 
+# Generate executables using various loop orderings with block copy optimization
+add_executable(LexicalTextSimilarity_flatvector_loop_kji_bco main.cpp tokenize.h tokenize.cpp LTS.h LTS_flat_loop_kji_bco.cpp linear.h linear.cpp)
 add_executable(LexicalTextSimilarity_flatvector_loop_ijk_bco main.cpp tokenize.h tokenize.cpp LTS.h LTS_flat_loop_ijk_bco.cpp linear.h linear.cpp)
+add_executable(LexicalTextSimilarity_flatvector_loop_kij_bco main.cpp tokenize.h tokenize.cpp LTS.h LTS_flat_loop_kij_bco.cpp linear.h linear.cpp)

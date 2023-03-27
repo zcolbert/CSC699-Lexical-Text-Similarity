@@ -326,3 +326,46 @@ void matrixMultiply_ijk_bco(const std::vector<float>& lhs, const std::vector<flo
         }
     }
 }
+
+void matrixMultiply_kij_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize)
+{
+    std::vector<float> ablock(blocksize * blocksize);
+    std::vector<float> bblock(blocksize * blocksize);
+    std::vector<float> cblock(blocksize * blocksize);
+
+    for (size_t i = 0; i < n; i += blocksize)
+    {
+        for (size_t j = 0; j < n; j += blocksize)
+        {
+            readBlock(cblock, result, i, j, n, blocksize);
+            for (size_t k = 0; k < m; k += blocksize)
+            {
+                readBlock(ablock, lhs, i, k, m, blocksize);
+                readBlock(bblock, rhs, k, j, n, blocksize);
+                matrixMultiply_kij(ablock, bblock, cblock, blocksize, blocksize);
+            }
+            writeBlock(result, cblock, i, j, n, blocksize);
+        }
+    }
+}
+void matrixMultiply_kji_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize)
+{
+    std::vector<float> ablock(blocksize * blocksize);
+    std::vector<float> bblock(blocksize * blocksize);
+    std::vector<float> cblock(blocksize * blocksize);
+
+    for (size_t i = 0; i < n; i += blocksize)
+    {
+        for (size_t j = 0; j < n; j += blocksize)
+        {
+            readBlock(cblock, result, i, j, n, blocksize);
+            for (size_t k = 0; k < m; k += blocksize)
+            {
+                readBlock(ablock, lhs, i, k, m, blocksize);
+                readBlock(bblock, rhs, k, j, n, blocksize);
+                matrixMultiply_kji(ablock, bblock, cblock, blocksize, blocksize);
+            }
+            writeBlock(result, cblock, i, j, n, blocksize);
+        }
+    }
+}
