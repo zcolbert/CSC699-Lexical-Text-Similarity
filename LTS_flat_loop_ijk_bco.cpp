@@ -16,6 +16,4 @@ void execute(const std::vector<std::unordered_map<std::string, unsigned int>>& d
     const size_t blocksize = 10;
     std::vector<float> result(rows * rows, 0);
     matrixMultiply_ijk_bco(matrix, m_T, result, rows, cols, blocksize);
-    printMatrix(result, rows, rows);
-
 }
