@@ -8,19 +8,36 @@ import csv
 reports = ['ijk.csv', 'kij.csv']
 
 
-def print_table(rows):
-    for row in rows:
-        print(row)
-    print()
+class Table:
+    def __init__(self, group, name):
+        self.group = group
+        self.name = name
+        self.rows = list()
+        self.headers = list()
+
+    def add_row(self, row):
+        self.rows.append(row)
+
+    def add_rows(self, rows):
+        self.rows.extend(rows)
+
+    @property
+    def title(self):
+        return f'{self.group} - {self.name}'
+
+    def __eq__(self, rhs):
+        return self.title == rhs.title
+
+    def __hash__(self):
+        return hash(self.title)
+
+    def __repr__(self):
+        return f"Table<group='{self.group}', name='{self.name}', rows={len(self.rows)}>"
 
 
 def main():
     tables = dict()
-
-    table_name = ''
-    group_name = ''
-    title = ''
-    rows = []
+    table = None
 
     for report in reports:
         exe = report
@@ -37,28 +54,22 @@ def main():
                     # start consuming rows
                     reading = True
 
-                    # If there is a table, flush it
-                    if len(rows) > 0:
-                        if title not in tables:
-                            tables[title] = list()
-                        tables[title].extend(rows)
+                    # If this section marks the end of the previous table, flush it.
+                    if table:
+                        if table.title in tables:
+                            tables[table.title].add_rows(table.rows)
+                        else:
+                            tables[table.title] = table
 
-                        # reset the table tracking data
-                        table_name = ''
-                        group_name = ''
-                        title = ''
-                        rows = []
+                        table = None
 
                     # start a new table
-                    table_name = row[1]
-                    group_name = row[2]
-                    # construct a title for this table, also used as a grouping key
-                    title = f'{group_name} - {table_name}'
+                    table = Table(group=row[2], name=row[1])
 
                     row = next(reader)  # discard the delimiting row 
                     # The next row is the table headers. Add field name to first column.
                     row.insert(0, 'Executable')  
-                    rows.append(row)
+                    table.headers = row
                     continue
 
                 # The report file contains sections that describe the system hardware.
@@ -68,27 +79,28 @@ def main():
                     # ignore any rows until the next table is encountered
                     reading = False
 
-                    # If there is a table, flush it
-                    if len(rows) > 0:
-                        if title not in tables:
-                            tables[title] = list()
-                        tables[title].extend(rows)
-
-                        # reset the table data
-                        table_name = ''
-                        group_name = ''
-                        title = ''
-                        rows = []
+                    # If this section marks the end of the previous table, flush it.
+                    if table:
+                        if table.title in tables:
+                            tables[table.title].add_rows(table.rows)
+                        else:
+                            tables[table.title] = table
+                        
+                        table = None
                 
                 # If the parser is currently consuming table rows, process the current row.
                 if reading:
                     row.insert(0, exe)  # insert the executable into the first column
-                    rows.append(row)
+                    #rows.append(row)
+                    if table:
+                        table.add_row(row)
     
-    # display the table
-    for title, rows in tables.items():
+
+    for title, table in tables.items():
+        print(table)
         print(title)
-        for row in rows:
+        print(table.headers)
+        for row in table.rows:
             print(row)
         print()
 
