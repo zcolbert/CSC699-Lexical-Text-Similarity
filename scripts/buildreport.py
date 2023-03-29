@@ -5,7 +5,14 @@ import csv
 # aggregate
 # build the new tables
 
-reports = ['ijk.csv', 'kij.csv']
+reports = [
+    'ijk.csv', 
+    'ikj.csv',
+    'jik.csv',
+    'jki.csv',
+    'kij.csv',
+    'kji.csv'
+]
 
 
 class Table:
@@ -96,13 +103,21 @@ def main():
                         table.add_row(row)
     
 
-    for title, table in tables.items():
-        print(table)
-        print(title)
-        print(table.headers)
-        for row in table.rows:
-            print(row)
-        print()
+    # Write the aggregated reports to an output file
+    with open('combined.csv', 'w') as outfile:
+        writer = csv.writer(outfile)
+        # Write a report title and a few blank lines
+        writer.writerow(['Combined reports'])
+        writer.writerow([])
+        writer.writerow([])
+
+        # Write each table's group and name, followed by its header and all of its rows
+        for table in tables.values():
+            writer.writerow([table.group, table.name])
+            writer.writerow(table.headers)
+            for row in table.rows:
+                writer.writerow(row)
+            writer.writerow([])
 
 
 if __name__ == '__main__':
