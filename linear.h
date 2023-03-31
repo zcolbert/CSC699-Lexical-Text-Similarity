@@ -86,6 +86,9 @@ void readBlock(std::vector<float>& dest, const std::vector<float>& src, size_t s
 void writeBlock(std::vector<float>& dest, const std::vector<float>& src, size_t start_row, size_t start_col, size_t n, size_t blocksize);
 
 void matrixMultiply_ijk_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
+void matrixMultiply_ikj_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
+void matrixMultiply_jik_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
+void matrixMultiply_jki_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
 void matrixMultiply_kij_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
 void matrixMultiply_kji_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
 
