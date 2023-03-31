@@ -12,7 +12,6 @@ void execute(const std::vector<std::unordered_map<std::string, unsigned int>>& d
     normalizeMatrix(matrix, rows,cols);
     auto m_T = transpose(matrix, rows, cols);
 
-    const size_t blocksize = 10;
     std::vector<float> result(rows * rows, 0);
-    matrixMultiply_jik_bco(matrix, m_T, result, rows, cols, blocksize);
+    matrixMultiply_jik_bco(matrix, m_T, result, rows, cols, BLOCKSIZE);
 }
