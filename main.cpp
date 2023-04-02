@@ -36,16 +36,6 @@ std::set<std::string> extractUniqueKeys(const std::vector<std::unordered_map<std
     return unique;
 }
 
-
-/**
- * Embed the frequency map's values onto the vector space of the given basis.
- *
- * @param freq_map A map of terms and their frequencies.
- * @param basis A unique set of all terms in the vocabulary.
- * @return A vector of term frequencies embedded into the basis vector space.
- */
-
-
 int main(int argc, char* argv[])
 {
     if (argc < 3) {
