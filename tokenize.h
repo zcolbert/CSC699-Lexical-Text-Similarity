@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -43,3 +44,10 @@ std::unordered_map<std::string, unsigned int>
 std::vector<std::unordered_map<std::string, unsigned int>>
         tokenizeFile(const std::string& path, unsigned short ngram_len, unsigned int max_count, bool ignorecase);
 
+
+/**
+ * Get a set of unique keys from a vector of unordered_maps.
+ * @param maps A vector of unordered_maps.
+ * @return A set of all unique keys across the maps.
+ */
+std::set<std::string> extractUniqueKeys(const std::vector<std::unordered_map<std::string, unsigned int>>& maps);

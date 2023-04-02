@@ -24,7 +24,6 @@ static void lowercase(std::string& orig)
     }
 }
 
-
 /**
  * Parse the string into individual tokens and keep count of the number
  * of times each token occurs.
@@ -67,7 +66,6 @@ std::unordered_map<std::string, unsigned int>
     return token_counts;
 }
 
-
 /**
  * Perform tokenization on all text records in the given file.
  *
@@ -90,3 +88,18 @@ std::vector<std::unordered_map<std::string, unsigned int>>
     return doc_freq_maps;
 }
 
+/**
+ * Get a set of unique keys from a vector of unordered_maps.
+ * @param maps A vector of unordered_maps.
+ * @return A set of all unique keys across the maps.
+ */
+std::set<std::string> extractUniqueKeys(const std::vector<std::unordered_map<std::string, unsigned int>>& maps)
+{
+    std::set<std::string> unique;
+    for (const auto& map: maps) {
+        for (const auto& kv: map) {
+            unique.insert(kv.first);
+        }
+    }
+    return unique;
+}
