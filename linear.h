@@ -92,14 +92,6 @@ void matrixMultiply_bco(
         std::vector<float>& result,
         size_t n, size_t m, size_t blocksize);
 
-void matrixMultiply_ijk_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
-void matrixMultiply_ikj_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
-void matrixMultiply_jik_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
-void matrixMultiply_jki_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
-void matrixMultiply_kij_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
-void matrixMultiply_kji_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
-
-
 std::vector<float> getTermFrequencyMatrix(
         const std::vector<std::unordered_map<std::string, unsigned int>>& doc_freq_maps,
         const std::set<std::string>& vocabulary,

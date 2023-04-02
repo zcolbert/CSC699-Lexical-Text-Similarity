@@ -17,7 +17,6 @@
 
 #include "linear.h"
 #include "tokenize.h"
-#include "LTS.h"
 
 
 int main(int argc, char* argv[])
