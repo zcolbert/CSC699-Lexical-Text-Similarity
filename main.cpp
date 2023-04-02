@@ -13,28 +13,10 @@
 #include <fstream>
 #include <string>
 #include <set>
-#include <unordered_map>
-#include <vector>
 
 #include "tokenize.h"
 #include "LTS.h"
 
-
-/**
- * Get a set of unique keys from a vector of unordered_maps.
- * @param maps A vector of unordered_maps.
- * @return A set of all unique keys across the maps.
- */
-std::set<std::string> extractUniqueKeys(const std::vector<std::unordered_map<std::string, unsigned int>>& maps)
-{
-    std::set<std::string> unique;
-    for (const auto& map: maps) {
-        for (const auto& kv: map) {
-            unique.insert(kv.first);
-        }
-    }
-    return unique;
-}
 
 int main(int argc, char* argv[])
 {
