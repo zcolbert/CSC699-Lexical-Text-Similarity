@@ -85,6 +85,13 @@ void matrixMultiply_kji(const std::vector<float>& lhs, const std::vector<float>&
 void readBlock(std::vector<float>& dest, const std::vector<float>& src, size_t start_row, size_t start_col, size_t n, size_t blocksize);
 void writeBlock(std::vector<float>& dest, const std::vector<float>& src, size_t start_row, size_t start_col, size_t n, size_t blocksize);
 
+void matrixMultiply_bco(
+        void(*mmfunc)(const std::vector<float>&, const std::vector<float>&, std::vector<float>&, size_t, size_t),
+        const std::vector<float>& lhs,
+        const std::vector<float>& rhs,
+        std::vector<float>& result,
+        size_t n, size_t m, size_t blocksize);
+
 void matrixMultiply_ijk_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
 void matrixMultiply_ikj_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
 void matrixMultiply_jik_bco(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m, size_t blocksize);
