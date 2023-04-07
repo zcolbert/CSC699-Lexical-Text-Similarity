@@ -135,8 +135,11 @@ int main(int argc, char* argv[])
 
     //const size_t rows = doc_freq_maps.size();
     //const size_t cols = unique_tokens.size();
-    const size_t rows = 1024;
-    const size_t cols = 1024;
+
+    // Choose a matrix containing enough elements to be larger than the L3 cache
+    // Haswell L3 cache size is 6MB. Floats are 4 bytes each,
+    const size_t rows = 2048;
+    const size_t cols = 2048;
 
     //auto matrix = getTermFrequencyMatrix(doc_freq_maps, unique_tokens, rows, cols);
     //normalizeMatrix(matrix, rows,cols);
