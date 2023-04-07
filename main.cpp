@@ -15,9 +15,32 @@
 #include <string>
 #include <set>
 
+#include <cstdlib>  // rand(), srand()
+
 #include "linear.h"
 #include "tokenize.h"
 
+
+/**
+ * Generate a matrix of random values between [0, 1)
+ * @param rows The number of rows in the matrix.
+ * @param cols The number of columns per row.
+ * @return The generated matrix.
+ */
+std::vector<float> generateMatrix(size_t rows, size_t cols)
+{
+    std::vector<float> data(rows * cols);
+
+    // Seed to ensure the same sequence of random values on each test run
+    std::srand(1);
+
+    for (size_t i = 0; i < rows; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            data[i * cols + j] = (float)std::rand() / (float)RAND_MAX;
+        }
+    }
+    return data;
+}
 
 int main(int argc, char* argv[])
 {
@@ -110,11 +133,14 @@ int main(int argc, char* argv[])
     // This set will define the vector space used for constructing the term frequency matrix.
     std::set<std::string> unique_tokens = extractUniqueKeys(doc_freq_maps);
 
-    const size_t rows = doc_freq_maps.size();
-    const size_t cols = unique_tokens.size();
+    //const size_t rows = doc_freq_maps.size();
+    //const size_t cols = unique_tokens.size();
+    const size_t rows = 1024;
+    const size_t cols = 1024;
 
-    auto matrix = getTermFrequencyMatrix(doc_freq_maps, unique_tokens, rows, cols);
-    normalizeMatrix(matrix, rows,cols);
+    //auto matrix = getTermFrequencyMatrix(doc_freq_maps, unique_tokens, rows, cols);
+    //normalizeMatrix(matrix, rows,cols);
+    auto matrix = generateMatrix(rows, cols);
     auto m_T = transpose(matrix, rows, cols);
 
     std::vector<float> result(rows * rows, 0);
