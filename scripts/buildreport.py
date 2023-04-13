@@ -1,18 +1,6 @@
+import argparse
 import csv
-
-#parse the reports
-# find the tables
-# aggregate
-# build the new tables
-
-reports = [
-    'ijk.csv', 
-    'ikj.csv',
-    'jik.csv',
-    'jki.csv',
-    'kij.csv',
-    'kji.csv'
-]
+import os
 
 
 class Table:
@@ -42,12 +30,33 @@ class Table:
         return f"Table<group='{self.group}', name='{self.name}', rows={len(self.rows)}>"
 
 
+def load_report_names_from_file(filename):
+    with open(filename, 'r') as infile:
+        return [line.strip() for line in infile]
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('filename')
+    parser.add_argument('-o', '--output')
+
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
+
     tables = dict()
     table = None
 
+    reports = load_report_names_from_file(args.filename)
+
     for report in reports:
-        exe = report
+
+        # Build an executable label from the name of the report
+        exe = os.path.split(report)[-1].split('.csv')[0]
+
         with open(report, 'r') as infile:
             reader = csv.reader(infile)
 
@@ -104,7 +113,11 @@ def main():
     
 
     # Write the aggregated reports to an output file
-    with open('combined.csv', 'w') as outfile:
+    outpath = 'combined.csv'
+    if args.output:
+        outpath = args.output
+
+    with open(outpath, 'w') as outfile:
         writer = csv.writer(outfile)
         # Write a report title and a few blank lines
         writer.writerow(['Combined reports'])
