@@ -33,6 +33,23 @@ class Table:
 def load_report_names_from_file(filename):
     with open(filename, 'r') as infile:
         return [line.strip() for line in infile]
+    
+
+def write_combined_file(filepath, tables):
+    with open(filepath, 'w') as outfile:
+        writer = csv.writer(outfile)
+        # Write a report title and a few blank lines
+        writer.writerow(['Combined reports'])
+        writer.writerow([])
+        writer.writerow([])
+
+        # Write each table's group and name, followed by its header and all of its rows
+        for table in tables.values():
+            writer.writerow([table.group, table.name])
+            writer.writerow(table.headers)
+            for row in table.rows:
+                writer.writerow(row)
+            writer.writerow([])
 
 
 def parse_args():
@@ -117,20 +134,7 @@ def main():
     if args.output:
         outpath = args.output
 
-    with open(outpath, 'w') as outfile:
-        writer = csv.writer(outfile)
-        # Write a report title and a few blank lines
-        writer.writerow(['Combined reports'])
-        writer.writerow([])
-        writer.writerow([])
-
-        # Write each table's group and name, followed by its header and all of its rows
-        for table in tables.values():
-            writer.writerow([table.group, table.name])
-            writer.writerow(table.headers)
-            for row in table.rows:
-                writer.writerow(row)
-            writer.writerow([])
+    write_combined_file(outpath, tables)
 
 
 if __name__ == '__main__':
