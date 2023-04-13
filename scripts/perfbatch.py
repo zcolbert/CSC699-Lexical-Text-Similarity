@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import subprocess
+from subprocess import PIPE, STDOUT
 import os
 
 
@@ -20,6 +21,8 @@ def main():
 
     groups = ['L3']
     loop_permutations = ['ijk', 'ikj', 'jik', 'jki', 'kij', 'kji']
+    #block_sizes = [16, 32, 64, 128, 256, 512, 1024, 2048]
+    block_sizes = [16, 64, 1024, 2048]
 
     # Maintain a list of files generated during this process 
     # for easy retrieval in other scripts.
@@ -43,86 +46,28 @@ def main():
         cmd.extend(['--mmloop', p])
         commands.append(cmd)
 
-    # Run all loop permutations with block-copy optimization, block size = 256
+    # Run all loop permutations with block-copy optimization
     for p in loop_permutations:
-        cmd = [likwid_tool, '-f']
-        for g in groups:
-            cmd.extend(['-g', g])
-        
-        blocksize = 256
+        for b in block_sizes:
+            cmd = [likwid_tool, '-f']
+            for g in groups:
+                cmd.extend(['-g', g])
 
-        csvpath = f'{out_dir}/{p}_bco_{blocksize}.csv'
-        output_files.append(csvpath)
-        cmd.extend(['-o', csvpath])
+            csvpath = f'{out_dir}/{p}_bco_{b}.csv'
+            output_files.append(csvpath)
+            cmd.extend(['-o', csvpath])
 
-        cmd.append(exe_base)
-        cmd.extend(['--data', data_input_file])
-        cmd.extend(['--count', data_record_count])
-        cmd.extend(['--mmloop', p])
-        cmd.extend(['--bco', str(blocksize)])
-        commands.append(cmd)
-
-    # Run all loop permutations with block-copy optimization, block size = 512
-    for p in loop_permutations:
-        cmd = [likwid_tool, '-f']
-        for g in groups:
-            cmd.extend(['-g', g])
-        
-        blocksize = 512
-
-        csvpath = f'{out_dir}/{p}_bco_{blocksize}.csv'
-        cmd.extend(['-o', f'{out_dir}/{p}_bco_{blocksize}.csv'])
-        output_files.append(csvpath)
-
-        cmd.append(exe_base)
-        cmd.extend(['--data', data_input_file])
-        cmd.extend(['--count', data_record_count])
-        cmd.extend(['--mmloop', p])
-        cmd.extend(['--bco', str(blocksize)])
-        commands.append(cmd)
-
-    # Run all loop permutations with block-copy optimization, block size = 1024
-    for p in loop_permutations:
-        cmd = [likwid_tool, '-f']
-        for g in groups:
-            cmd.extend(['-g', g])
-        
-        blocksize = 1024
-
-        csvpath = f'{out_dir}/{p}_bco_{blocksize}.csv'
-        cmd.extend(['-o', f'{out_dir}/{p}_bco_{blocksize}.csv'])
-        output_files.append(csvpath)
-
-        cmd.append(exe_base)
-        cmd.extend(['--data', data_input_file])
-        cmd.extend(['--count', data_record_count])
-        cmd.extend(['--mmloop', p])
-        cmd.extend(['--bco', str(blocksize)])
-        commands.append(cmd)
-
-    # Run all loop permutations with block-copy optimization, block size = 1024
-    for p in loop_permutations:
-        cmd = [likwid_tool, '-f']
-        for g in groups:
-            cmd.extend(['-g', g])
-        
-        blocksize = 2048
-
-        csvpath = f'{out_dir}/{p}_bco_{blocksize}.csv'
-        cmd.extend(['-o', f'{out_dir}/{p}_bco_{blocksize}.csv'])
-        output_files.append(csvpath)
-
-        cmd.append(exe_base)
-        cmd.extend(['--data', data_input_file])
-        cmd.extend(['--count', data_record_count])
-        cmd.extend(['--mmloop', p])
-        cmd.extend(['--bco', str(blocksize)])
-        commands.append(cmd)
-
+            cmd.append(exe_base)
+            cmd.extend(['--data', data_input_file])
+            cmd.extend(['--count', data_record_count])
+            cmd.extend(['--mmloop', p])
+            cmd.extend(['--bco', str(b)])
+            commands.append(cmd)
 
     for cmd in commands:
         print(f"Running {' '.join(cmd)}")
-        subprocess.run(cmd)
+        p = subprocess.run(cmd)
+        print('Process returned ', p.returncode)
 
     # Write the list of generated filenames to a file
     with open('output_files.txt', 'w') as outfile:
