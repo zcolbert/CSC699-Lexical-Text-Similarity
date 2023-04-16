@@ -1,9 +1,7 @@
 import argparse
 import csv
-import os
 
 import likwidcsv
-
 
 
 def load_report_names_from_file(filename):
@@ -49,7 +47,6 @@ def main():
         outpath = args.output
 
     write_combined_file(outpath, tables)
-
 
 
 if __name__ == '__main__':

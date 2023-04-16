@@ -1,3 +1,4 @@
+import copy
 import csv
 import os
 
@@ -30,6 +31,38 @@ class Table:
 
     def __repr__(self):
         return f"Table<group='{self.group}', name='{self.name}', rows={len(self.rows)}>"
+
+    def filtered(self, field, value):
+        """Return a table containing a subset of rows containing
+        the given value in the specified field."""
+        if field not in self.headers:
+            raise KeyError
+
+        table = Table(name=self.name, group=self.group)
+        table.headers = self.headers
+
+        index = self.headers.index(field)
+        for row in self.rows:
+            if row[index] == value:
+                table.add_row(row)
+
+        return table
+
+    def sort(self, field, reverse=False):
+        """Sort the rows in-place based on values in the specified field."""
+        if field not in self.headers:
+            raise KeyError
+
+        index = self.headers.index(field)
+        self.rows.sort(key=lambda r: r[index], reverse=reverse)
+
+    def sorted(self, field, reverse=False):
+        """Return a copy of the table with rows sorted by the specified field."""
+        if field not in self.headers:
+            raise KeyError
+
+        table = copy.deepcopy(self)
+        table.sort(field, reverse)
 
     def print(self):
         print(self.title.upper())
@@ -124,5 +157,3 @@ def parse_likwid_csv(filepath, identifier : Tuple[str, str] = None) -> Dict[str,
                     table.add_row(row)
 
     return tables
-
-
