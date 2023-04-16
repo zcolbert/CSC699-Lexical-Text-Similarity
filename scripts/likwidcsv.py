@@ -48,21 +48,20 @@ class Table:
 
         return table
 
-    def sort(self, field, reverse=False):
-        """Sort the rows in-place based on values in the specified field."""
-        if field not in self.headers:
-            raise KeyError
+    def sort(self, fields, reverse=False):
+        """Sort the rows in-place based on values in the specified fields.
+        @param fields A list of tuples: (FieldName (str), type), where the value at this field is cast to type.
+        @param reverse True if the data should be sorted in reverse order, else False.
+        @return None
+        """
+        print(fields)
+        self.rows.sort(key=lambda r: tuple(f[1](r[self.headers.index(f[0])]) for f in fields), reverse=reverse)
 
-        index = self.headers.index(field)
-        self.rows.sort(key=lambda r: r[index], reverse=reverse)
-
-    def sorted(self, field, reverse=False):
+    def sorted(self, fields, reverse=False):
         """Return a copy of the table with rows sorted by the specified field."""
-        if field not in self.headers:
-            raise KeyError
-
         table = copy.deepcopy(self)
-        table.sort(field, reverse)
+        table.sort(fields, reverse)
+        return table
 
     def print(self):
         print(self.title.upper())
