@@ -1,7 +1,7 @@
 import csv
 import os
 
-from typing import Dict
+from typing import Dict, Tuple
 
 
 """Represents a table of LIKWID perfctr data points for a single metric group"""
@@ -38,13 +38,19 @@ class Table:
             print(','.join(row))
 
 
-def parse_reports(reports):
+def parse_reports(report_paths):
+    """Parse out the performance counter tables from a collection of
+    CSV files and aggregate the data from each file into common tables.
+    @param report_paths a list of paths to CSV files containing performance counter tables.
+    @return A dict of performance counter tables with their titles as keys.
+    """
     tables = dict()
 
-    for report in reports:
+    for report in report_paths:
         # Build an executable label from the name of the report
-        #exe = os.path.split(report)[-1].split('.csv')[0]
-        report_tables = parse_likwid_csv(report)
+        exe = os.path.split(report)[-1].split('.csv')[0]
+        # The executable name will uniquely identify each group of records in the tables
+        report_tables = parse_likwid_csv(report, identifier=('Executable', exe))
         for title, table in report_tables.items():
             if title in tables:
                 tables[title].add_rows(report_tables[title].rows)
@@ -54,9 +60,10 @@ def parse_reports(reports):
     return tables
 
 
-def parse_likwid_csv(filepath) -> Dict[str, Table]:
+def parse_likwid_csv(filepath, identifier : Tuple[str, str] = None) -> Dict[str, Table]:
     """Parse out all the performance counter tables in a single CSV file.
     @param filepath The path to a CSV file containing performance counter data.
+    @param identifier A tuple containing a column title and value which uniquely identify this set of records.
     @return A dictionary of tables, with the titles of each table as the keys.
     """
     tables = dict()
@@ -88,6 +95,8 @@ def parse_likwid_csv(filepath) -> Dict[str, Table]:
                 table = Table(name=row[1], group=row[2])
 
                 row = next(reader)  # discard the delimiting row
+                if identifier:
+                    row.insert(0, identifier[0])
                 table.headers = row
                 continue
 
@@ -109,7 +118,8 @@ def parse_likwid_csv(filepath) -> Dict[str, Table]:
 
             # If the parser is currently consuming table rows, process the current row.
             if reading:
-                #row.insert(0, exe)  # insert the executable into the first column
+                if identifier:
+                    row.insert(0, identifier[1])
                 if table:
                     table.add_row(row)
 
