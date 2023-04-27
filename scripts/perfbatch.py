@@ -6,8 +6,6 @@ from subprocess import PIPE, STDOUT
 import os
 
 
-exe_dir = '../build'
-
 def parse_args():
     parser = argparse.ArgumentParser()
 
@@ -22,7 +20,6 @@ def parse_args():
 def main():
 
     args = parse_args()
-    print(args)
 
     if not args.group:
         print('Error: group not specified')
