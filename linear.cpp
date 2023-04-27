@@ -223,11 +223,9 @@ std::vector<float> matrixMultiply_kji(const std::vector<float>& lhs, const std::
 
 void matrixMultiply_ijk(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m)
 {
-#pragma omp parallel for
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
                 for (int k = 0; k < m; ++k) {
-#pragma omp critical
                     result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
                 }
             }
@@ -235,11 +233,9 @@ void matrixMultiply_ijk(const std::vector<float>& lhs, const std::vector<float>&
 }
 void matrixMultiply_ikj(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m)
 {
-#pragma omp parallel for
         for (int i = 0; i < n; ++i) {
             for (int k = 0; k < m; ++k) {
                 for (int j = 0; j < n; ++j) {
-#pragma omp critical
                     result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
                 }
             }
@@ -247,11 +243,9 @@ void matrixMultiply_ikj(const std::vector<float>& lhs, const std::vector<float>&
 }
 void matrixMultiply_jik(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m)
 {
-#pragma omp parallel for
         for (int j = 0; j < n; ++j) {
             for (int i = 0; i < n; ++i) {
                 for (int k = 0; k < m; ++k) {
-#pragma omp critical
                     result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
                 }
             }
@@ -259,11 +253,9 @@ void matrixMultiply_jik(const std::vector<float>& lhs, const std::vector<float>&
 }
 void matrixMultiply_jki(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m)
 {
-#pragma omp parallel for
         for (int j = 0; j < n; ++j) {
             for (int k = 0; k < m; ++k) {
                 for (int i = 0; i < n; ++i) {
-#pragma omp critical
                     result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
                 }
             }
@@ -271,11 +263,9 @@ void matrixMultiply_jki(const std::vector<float>& lhs, const std::vector<float>&
 }
 void matrixMultiply_kij(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m)
 {
-#pragma omp parallel for
         for (int k = 0; k < m; ++k) {
             for (int i = 0; i < n; ++i) {
                 for (int j = 0; j < n; ++j) {
-#pragma omp critical
                     result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
                 }
             }
@@ -283,11 +273,9 @@ void matrixMultiply_kij(const std::vector<float>& lhs, const std::vector<float>&
 }
 void matrixMultiply_kji(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m)
 {
-#pragma omp parallel for
         for (int k = 0; k < m; ++k) {
             for (int j = 0; j < n; ++j) {
                 for (int i = 0; i < n; ++i) {
-#pragma omp critical
                     result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
                 }
             }
