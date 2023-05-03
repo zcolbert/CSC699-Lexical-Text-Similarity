@@ -24,7 +24,7 @@ class Table:
         return f'{self.group} - {self.name}'
 
     def __eq__(self, rhs):
-        return self.title == rhs.title
+        return self.title == rhs.title and len(self.rows) == len(rhs.rows)
 
     def __hash__(self):
         return hash(self.title)
@@ -112,6 +112,7 @@ def parse_likwid_csv(filepath, identifier : Tuple[str, str] = None) -> Dict[str,
             # this new table.
 
             if row[0] == 'TABLE':
+                print(row)
                 reading = True  # start consuming rows
 
                 # If this section marks the end of the previous table, flush it.
@@ -154,5 +155,12 @@ def parse_likwid_csv(filepath, identifier : Tuple[str, str] = None) -> Dict[str,
                     row.insert(0, identifier[1])
                 if table:
                     table.add_row(row)
+
+    # Flush the last table
+    if table:
+        if table.title in tables:
+            tables[table.title].add_rows(table.rows)
+        else:
+            tables[table.title] = table
 
     return tables
