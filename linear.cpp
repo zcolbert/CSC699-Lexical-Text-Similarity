@@ -224,38 +224,10 @@ std::vector<float> matrixMultiply_kji(const std::vector<float>& lhs, const std::
 
 void matrixMultiply_ijk(const std::vector<float>& lhs, const std::vector<float>& rhs, std::vector<float>& result, size_t n, size_t m)
 {
-    #pragma omp parallel
-    {
-        // omp_get_num_threads() binds inside of the innermost closing parallel region.
-        // Usage outside of a parallel region will indicate only a single thread
-        if (omp_get_num_threads() > 1)
-        {
-            // Create thread-local storage to hold results of computation in each thread
-            // Each thread will have its own copy of this vector, producing a partial result
-            std::vector<float> tls(result.size(), 0);
-
-            #pragma omp for
-            for (int i = 0; i < n; ++i) {
-                for (int j = 0; j < n; ++j) {
-                    for (int k = 0; k < m; ++k) {
-                        tls[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
-                    }
-                }
-            }
-            // Consolidate the thread local results into the shared result vector
-            for (size_t i = 0; i < tls.size(); ++i) {
-                #pragma omp critical
-                result[i] += tls[i];
-            }
-        }
-        else  // Thread local storage is not necessary. Perform operations directly into result.
-        {
-            for (int i = 0; i < n; ++i) {
-                for (int j = 0; j < n; ++j) {
-                    for (int k = 0; k < m; ++k) {
-                        result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
-                    }
-                }
+    #pragma omp parallel for
+    for (int i = 0; i < n; ++i) { for (int j = 0; j < n; ++j) {
+            for (int k = 0; k < m; ++k) {
+                result[i * n + j] += lhs[i * m + k] * rhs[k * n + j];
             }
         }
     }
