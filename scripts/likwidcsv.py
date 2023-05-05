@@ -112,7 +112,6 @@ def parse_likwid_csv(filepath, identifier : Tuple[str, str] = None) -> Dict[str,
             # this new table.
 
             if row[0] == 'TABLE':
-                print(row)
                 reading = True  # start consuming rows
 
                 # If this section marks the end of the previous table, flush it.
