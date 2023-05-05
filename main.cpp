@@ -14,8 +14,8 @@
 #include <getopt.h>
 #include <string>
 #include <set>
-
 #include <cstdlib>  // rand(), srand()
+#include <chrono>
 
 #include "linear.h"
 #include "tokenize.h"
@@ -149,14 +149,21 @@ int main(int argc, char* argv[])
     std::vector<float> result(rows * rows, 0);
 
     // Execute the selected algorithm
-    if (mmfunc_ptr != nullptr)
-    {
+    std::chrono::time_point<std::chrono::high_resolution_clock> start_time = std::chrono::high_resolution_clock::now();
+
+    if (mmfunc_ptr != nullptr) {
         if (use_bco) {
             matrixMultiply_bco(mmfunc_ptr, matrix, m_T, result, rows, cols, blocksize);
         } else {
             mmfunc_ptr(matrix, m_T, result, rows, cols);
         }
     }
+
+    std::chrono::time_point<std::chrono::high_resolution_clock> end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+
+    std::cout << "Elapsed time is : " << elapsed.count() << "s " << std::endl;
+
     if (print_result) {
         std::cout << "Result matrix: " << std::endl;
         printMatrix(result, rows, rows);
