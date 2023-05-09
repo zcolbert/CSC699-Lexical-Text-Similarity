@@ -8,11 +8,11 @@
  *****************************************************************************/
 
 #include "linear.h"
+
+#include <cmath>    // sqrt
 #include <iostream>
 #include <iomanip>
 #include <omp.h>
-
-#include <cmath>    // sqrt
 
 
 /**
@@ -287,7 +287,7 @@ void matrixMultiply_kij(const std::vector<float>& lhs, const std::vector<float>&
             }
             // Consolidate the thread local results into the shared result vector
             for (size_t i = 0; i < tls.size(); ++i) {
-                #pragma omp critical
+                #pragma omp atomic
                 result[i] += tls[i];
             }
         }
@@ -325,7 +325,7 @@ void matrixMultiply_kji(const std::vector<float>& lhs, const std::vector<float>&
             }
             // Consolidate the thread local results into the shared result vector
             for (size_t i = 0; i < tls.size(); ++i) {
-                #pragma omp critical
+                #pragma omp atomic
                 result[i] += tls[i];
             }
         }
