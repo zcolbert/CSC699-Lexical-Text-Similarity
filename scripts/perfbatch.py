@@ -2,7 +2,6 @@
 
 import argparse
 import subprocess
-from subprocess import PIPE, STDOUT
 import os
 
 
