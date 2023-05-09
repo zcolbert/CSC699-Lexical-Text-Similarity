@@ -35,7 +35,7 @@ def main():
             if size > 0:
                 args.extend(['--bco', str(size)])
 
-            print(','.join((loop, str(size))), end=',')
+            print(','.join((loop, str(size))), end=',', flush=True)
             command = ' '.join(args)
             p = subprocess.run(command, shell=True)
 
