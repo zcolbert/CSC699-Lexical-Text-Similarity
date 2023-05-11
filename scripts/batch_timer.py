@@ -29,21 +29,33 @@ def main():
         print('Error: Must supply at least one executable')
         return
 
-
     rows = []
 
+    out_dir = args.output
+    if out_dir is None:
+        print('Error: Output directory not specified')
+
+    if not os.path.exists(out_dir):
+        print('Creating directory', out_dir)
+        os.mkdir(out_dir)
+
     for exe in args.exe:
+        #base_args = [f'./{exe}', '--data', data_input_file, '--count', data_record_count]
         base_args = [f'./{exe}', '--data', data_input_file, '--count', data_record_count]
 
         for loop in loop_permutations:
             for size in block_sizes:
                 for plevel in plevels:
 
+                    filename = '_'.join((exe.split('/')[-1], 'L3', loop, str(size), f'P{str(plevel)}'))
+                    csvpath = f'{out_dir}/{filename}.csv'
+
                     print(f"Running '{exe}' with nthreads={plevel}, loop='{loop}', blocksize={size}", end=' ')
 
                     os.environ['OMP_NUM_THREADS'] = str(plevel)
 
-                    args = []
+                    #args = []
+                    args = ['likwid-perfctr', '-g', 'L3', '-o', csvpath]
                     args.extend(base_args)
 
                     args.extend(['--mmloop', loop])
@@ -55,14 +67,16 @@ def main():
                     runtime = float(p.stdout)
                     print(f'({runtime} s)')
 
-                    rows.append([plevel, loop, size, runtime])
+                    #rows.append([plevel, loop, size, runtime])
 
+    '''
     headers = ['NThreads', 'Loop', 'Block Size', 'Runtime (s)']
     with open('runtimes.csv', 'w') as outfile:
         writer = csv.writer(outfile)
-
         writer.writerow(headers)
         writer.writerows(rows)
+        '''
+
 
 if __name__ == '__main__':
     main()
