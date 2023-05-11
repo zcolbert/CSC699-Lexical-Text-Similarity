@@ -50,7 +50,7 @@ def main():
                     filename = '_'.join((exe.split('/')[-1], 'L3', loop, str(size), f'P{str(plevel)}'))
                     csvpath = f'{out_dir}/{filename}.csv'
 
-                    print(f"Running '{exe}' with nthreads={plevel}, loop='{loop}', blocksize={size}", end=' ')
+                    print(f"Running '{exe}' with nthreads={plevel}, loop='{loop}', blocksize={size}", end=' ', flush=True)
 
                     os.environ['OMP_NUM_THREADS'] = str(plevel)
 
